@@ -57,7 +57,7 @@ namespace audient_feature_extractor
                 main_header += String.Join(",", mfccExtractor.FeatureDescriptions);
                 main_header += ",";
                 main_header += String.Join(",", tdExtractor.FeatureDescriptions);
-                main_header += ",centroid,spread,flatness,noiseness,roloff,crest,decrease,entropy";
+                main_header += ",centroid,spread,flatness,noiseness,roloff,crest,decrease,spectral_entropy";
                 writer.WriteLine(main_header);
                 string feature_string = String.Empty;
                 foreach (var folder in folders)

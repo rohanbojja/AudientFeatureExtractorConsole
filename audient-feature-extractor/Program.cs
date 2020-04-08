@@ -24,11 +24,12 @@ namespace audient_feature_extractor
             DiscreteSignal signal;
 
             // load
+            var mfcc_no = 24;
             var samplingRate = 16000;
             var mfccOptions = new MfccOptions
             {
-                SamplingRate = 16000,
-                FeatureCount = 13,
+                SamplingRate = samplingRate,
+                FeatureCount = mfcc_no,
                 FrameDuration = 0.025/*sec*/,
                 HopDuration = 0.010/*sec*/,
                 PreEmphasis = 0.97,
@@ -37,7 +38,7 @@ namespace audient_feature_extractor
 
             var opts = new MultiFeatureOptions
             {
-                SamplingRate = 16000,
+                SamplingRate = samplingRate,
                 FrameDuration = 0.025,
                 HopDuration = 0.010
             };
@@ -71,13 +72,13 @@ namespace audient_feature_extractor
                         feature_string = String.Empty;
                         feature_string = $"{f_name},";
                         //MFCC
-                        var avg_vec_mfcc = new List<float>(14);
+                        var avg_vec_mfcc = new List<float>(mfcc_no+1);
                         //TD Features
                         var avg_vec_td = new List<float>(4);
                         //Spectral features
                         var avg_vec_spect = new List<float>(10);
 
-                        for (var i = 0; i < 13; i++)
+                        for (var i = 0; i < mfcc_no; i++)
                         {
                             avg_vec_mfcc.Add(0f);
                         }
@@ -99,8 +100,8 @@ namespace audient_feature_extractor
                             //Compute MFCC
                             tdVectors = tdExtractor.ComputeFrom(signal);
                             mfccVectors = mfccExtractor.ComputeFrom(signal);
-                            var fft = new Fft(1024);
                             var fftSize = 1024;
+                            var fft = new Fft(fftSize);
                             var resolution = (float)samplingRate / fftSize;
 
                             var frequencies = Enumerable.Range(0, fftSize / 2 + 1)
@@ -124,7 +125,7 @@ namespace audient_feature_extractor
 
                         foreach (var inst in mfccVectors)
                         {
-                            for (var i = 0; i < 13; i++)
+                            for (var i = 0; i < mfcc_no; i++)
                             {
                                 avg_vec_mfcc[i] += inst[i];
                             }
@@ -138,7 +139,7 @@ namespace audient_feature_extractor
                             }
                         }
                         
-                        for (var i = 0; i < 13; i++)
+                        for (var i = 0; i < mfcc_no; i++)
                         {
                             avg_vec_mfcc[i] /= mfccVectors.Count;
                         }
